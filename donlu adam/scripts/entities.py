@@ -17,14 +17,13 @@ class Player:
         self.cam_vel = tile_size / 2
         
         self.inventory_open = False
-        self.inventory_x = -160
-        print(self.inventory_x)
+        self.inventory_x = -320
         self.guis = guis
         
     def update(self):
         #Movement
-        self.pos[0] = round(self.pos[0] + ((self.vel - abs((self.movement[1][0]*-1 + self.movement[1][1]*1) * ((self.tile_size / 4) ** 1/2))) * (self.movement[0][0]*-1 + self.movement[0][1]*1)))
-        self.pos[1] = round(self.pos[1] + ((self.vel - abs((self.movement[0][0]*-1 + self.movement[0][1]*1) * ((self.tile_size / 4) ** 1/2))) * (self.movement[1][0]*-1 + self.movement[1][1]*1)))
+        self.pos[0] = round(self.pos[0] + ((self.vel / (abs((self.movement[1][0] - self.movement[1][1]) * 2**.5) + 1 - abs((self.movement[1][0] - self.movement[1][1])))) * (self.movement[0][0]*-1 + self.movement[0][1]*1)))
+        self.pos[1] = round(self.pos[1] + ((self.vel / (abs((self.movement[0][0] - self.movement[0][1]) * 2**.5) + 1 - abs((self.movement[0][0] - self.movement[0][1])))) * (self.movement[1][0]*-1 + self.movement[1][1]*1)))
         
         if self.movement[2] == False: self.cam[0], self.cam[1] = round(self.cam[0] + ((self.pos[0] - self.cam[0]) / 5), 0), round(self.cam[1] + ((self.pos[1] - self.cam[1]) / 5), 0)
         else: self.cam[0], self.cam[1] = self.cam[0] + (self.cam_vel * (self.movement[3][0]*-1 + self.movement[3][1]*1)) , self.cam[1] + (self.cam_vel * (self.movement[4][0]*-1 + self.movement[4][1]*1))
@@ -44,11 +43,11 @@ class Player:
     
     def inventory(self):
         if self.inventory_open == True:
-            if self.inventory_x < 96: self.inventory_x += ceil((96 - self.inventory_x) / 10)
+            if self.inventory_x < -160: self.inventory_x += ceil((-160 - self.inventory_x) / 10)
         if self.inventory_open == False:
-            if self.inventory_x > -160: self.inventory_x += floor((-160 - self.inventory_x) / 10)
+            if self.inventory_x > -320: self.inventory_x += floor((-320 - self.inventory_x) / 10)
     def render_inventory(self,surf):
-        surf.blit(self.guis, (self.pos[0] + (160 - (self.tile_size / 2)) - self.cam[0], self.pos[1] + (120 - (self.tile_size / 2)) - self.cam[1]))
+        surf.blit(self.guis['inventory'][0], (self.inventory_x + 160, 0 + 120))
     
     def player_event(self, event):
         if event.type == pygame.KEYDOWN:

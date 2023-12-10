@@ -47,7 +47,7 @@ class Tiles:
         for i in range(self.count - (self.RD[1] * self.width), self.count, 1 * self.width):
             for j in range(i, (i - self.RD[0]), -1):
                 if j >= 0 and j < self.map_size:
-                    if ((p_pos[1] - (self.size / 2) < (self.map[j][0][1] * self.size) and p_pos[0] > self.map[j][0][0] * self.size) or p_pos[0] < self.size / 2) and self.player_rendered == False:
+                    if ((p_pos[1] - (self.size / 2) < (self.map[j][0][1] * self.size) and p_pos[0] > self.map[j][0][0] * self.size) or p_pos[0] < self.size / 2 or p_pos[1] > (self.height * self.size - self.size / 2)) and self.player_rendered == False:
                         player.render(surf)
                         self.player_rendered = True
                         if self.map[j][3] != 'empty': #If player stands behind an object make that object transparent and render that

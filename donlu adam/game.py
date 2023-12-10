@@ -12,7 +12,7 @@ class Game:
         
         pygame.display.set_caption('Testing stuff...')
         
-        WIDTH, HEIGHT = 640, 480
+        WIDTH, HEIGHT = 1280, 960
         self.screen = pygame.display.set_mode((WIDTH,HEIGHT), pygame.RESIZABLE)
         self.display = pygame.Surface((320,240))
 
@@ -63,6 +63,8 @@ class Game:
             self.p_cam, self.p_pos, self.mouse_buttons, self.mouse_pos = self.player.update()
             
             self.tiles.render(self.display, self.p_cam, self.p_pos, self.player, self.RD)
+            
+            self.player.render_inventory(self.display)
             
             self.screen.blit(pygame.transform.scale(self.display, (self.screen.get_size()[0],self.screen.get_size()[1])), (0, 0))
             pygame.display.update()

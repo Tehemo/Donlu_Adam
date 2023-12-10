@@ -1,7 +1,7 @@
 import pygame
 import os
 
-Base_Image_Path = 'my pygame projects/data/images/'
+Base_Image_Path = 'donlu adam/data/images/'
 
 def LoadImage(path):
     img = pygame.image.load(Base_Image_Path + path).convert_alpha()
