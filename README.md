@@ -1,6 +1,6 @@
 # Cibildak_Adam
 Oyun
-Tamamen eğlencesine yapılan her hangi bir amaç güdülmeyen bir oyundur.
+Tamamen eğlencesine yapılan her hangi bir amaç güdülmeyen bir oyundur. İçinde hakaret barındırabilecek ögeler olabilir.
 
 Hikayesi:
 
