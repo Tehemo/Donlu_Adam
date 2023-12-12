@@ -47,7 +47,7 @@ class Player:
         if self.inventory_open == False:
             if self.inventory_x > -320: self.inventory_x += floor((-320 - self.inventory_x) / 10)
     def render_inventory(self,surf):
-        surf.blit(self.guis['inventory'][0], (self.inventory_x + 160, 0 + 120))
+        surf.blit(self.guis['inventory'][0], (self.inventory_x + 160, 0))
     
     def player_event(self, event):
         if event.type == pygame.KEYDOWN:
