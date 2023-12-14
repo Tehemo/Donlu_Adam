@@ -17,14 +17,14 @@ class Player:
         
         #Movement variables        
         self.movement = [[False,False],[False,False],True,[False,False],[False,False]] #0-X, 1-Y, 2-Free cam toggle, 3-cam X, 4-cam Y
-        self.vel = tile_size / 4
+        self.vel = tile_size / 8
         self.cam_vel = tile_size / 2
         
         #Inventory variables
         self.inventory_open = False
         self.guis = guis
         self.inventory_size = guis['inventory'].get_size()
-        self.inventory_x = (-1 * (self.surf_size[0] / 2) * self.zoom - self.inventory_size[0])
+        self.inventory_x = (-1 * self.surf_size[0] - self.inventory_size[0])
         
     def update(self):
         #Movement
@@ -38,8 +38,8 @@ class Player:
         if self.movement[2] == False: self.cam[0], self.cam[1] = round(self.cam[0] + ((self.pos[0] - self.cam[0]) / 5), 0), round(self.cam[1] + ((self.pos[1] - self.cam[1]) / 5), 0)
         else: self.cam[0], self.cam[1] = self.cam[0] + (self.cam_vel * (self.movement[3][0]*-1 + self.movement[3][1]*1)), self.cam[1] + (self.cam_vel * (self.movement[4][0]*-1 + self.movement[4][1]*1))
         
-        self.cam[0] = max(self.surf_size[0] / 2, min(self.cam[0], self.map_size[0] * (self.tile_size * self.zoom) - (self.surf_size[0] / 2)))
-        self.cam[1] = max(self.surf_size[1] / 2, min(self.cam[1], self.map_size[1] * (self.tile_size * self.zoom) - (self.surf_size[1] / 2)))
+        self.cam[0] = max(self.surf_size[0] / (2 * self.zoom), min(self.cam[0], self.map_size[0] * (self.tile_size * self.zoom) - (self.surf_size[0] / (2 * self.zoom)))) #TODO burayı düzelt
+        self.cam[1] = max(self.surf_size[1] / (2 * self.zoom), min(self.cam[1], self.map_size[1] * (self.tile_size * self.zoom) - (self.surf_size[1] / (2 * self.zoom)))) #TODO burayı düzelt
 
         #Mouse
         mouse_buttons, mouse_pos = pygame.mouse.get_pressed(), pygame.mouse.get_pos()
@@ -50,11 +50,10 @@ class Player:
         return self.cam, self.pos, mouse_buttons, mouse_pos
     
     def inventory(self):
-        print(self.inventory_x)
         if self.inventory_open == True:
-            if self.inventory_x < (-1 * (self.surf_size[0] / 2) * self.zoom): self.inventory_x += ceil((-1 * (self.surf_size[0] / 2) * self.zoom - self.inventory_x) / 10)
+            if self.inventory_x < (-1 * self.surf_size[0]): self.inventory_x += ceil((-1 * self.surf_size[0] - self.inventory_x) / 10)
         if self.inventory_open == False:
-            if self.inventory_x > (-1 * (self.surf_size[0] / 2) * self.zoom - self.inventory_size[0]): self.inventory_x += floor((-1 * (self.surf_size[0] / 2) * self.zoom - self.inventory_size[0] - self.inventory_x) / 10)
+            if self.inventory_x > (-1 * self.surf_size[0] - self.inventory_size[0]): self.inventory_x += floor((-1 * self.surf_size[0] - self.inventory_size[0] - self.inventory_x) / 10)
     def render_inventory(self,surf):
         surf.blit(self.guis['inventory'], (self.inventory_x + self.surf_size[0], (self.surf_size[1] / 2) - (self.guis['inventory'].get_size()[1] / 2)))
     
@@ -107,6 +106,6 @@ class Player:
             if event.key == pygame.K_s:
                 self.movement[1][1] = False
     
-    def render(self, surf):
-        surf.blit(self.game.pimg, (self.pos[0] + ((self.surf_size[0] / 2) - ((self.tile_size * self.zoom) / 2)) - self.cam[0],
-                                   self.pos[1] + ((self.surf_size[1] / 2) - ((self.tile_size * self.zoom) / 2)) - self.cam[1]))
+    def render(self, surf):#TODO burayı düzelt
+        surf.blit(self.game.pimg, ((self.pos[0] * self.zoom) + ((self.surf_size[0] / 2) - ((self.tile_size * self.zoom) / 2)) - (self.cam[0] * self.zoom),
+                                   (self.pos[1] * self.zoom) + ((self.surf_size[1] / 2) - ((self.tile_size * self.zoom) / 2)) - (self.cam[1] * self.zoom)))

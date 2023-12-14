@@ -14,12 +14,12 @@ class Game:
         
         WIDTH, HEIGHT = 1280, 960
         self.screen = pygame.display.set_mode((WIDTH,HEIGHT), pygame.RESIZABLE)
-        self.display = pygame.Surface((320 * 2,240 * 2))
+        self.display = pygame.Surface((640,480))
         self.display_size = self.display.get_size()
 
         self.Clock = pygame.time.Clock()
         
-        self.tile_size, self.zoom = SetSize(16, 2) #(TILE_SIZE, ZOOM)
+        self.tile_size, self.zoom = SetSize(16, 2, 2) #(TILE_SIZE, RATIO, ZOOM)
         
         tile_assets = {
             'empty' : 'empty',
