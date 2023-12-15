@@ -38,16 +38,13 @@ class Player:
         if self.movement[2] == False: self.cam[0], self.cam[1] = round(self.cam[0] + ((self.pos[0] - self.cam[0]) / 5), 0), round(self.cam[1] + ((self.pos[1] - self.cam[1]) / 5), 0)
         else: self.cam[0], self.cam[1] = self.cam[0] + (self.cam_vel * (self.movement[3][0]*-1 + self.movement[3][1]*1)), self.cam[1] + (self.cam_vel * (self.movement[4][0]*-1 + self.movement[4][1]*1))
         
-        self.cam[0] = max(self.surf_size[0] / (2 * self.zoom), min(self.cam[0], self.map_size[0] * (self.tile_size * self.zoom) - (self.surf_size[0] / (2 * self.zoom)))) #TODO burayı düzelt
-        self.cam[1] = max(self.surf_size[1] / (2 * self.zoom), min(self.cam[1], self.map_size[1] * (self.tile_size * self.zoom) - (self.surf_size[1] / (2 * self.zoom)))) #TODO burayı düzelt
-
-        #Mouse
-        mouse_buttons, mouse_pos = pygame.mouse.get_pressed(), pygame.mouse.get_pos()
+        self.cam[0] = max(self.surf_size[0] / (2 * self.zoom), min(self.cam[0], self.map_size[0] * (self.tile_size) - (self.surf_size[0] / (2 * self.zoom))))
+        self.cam[1] = max(self.surf_size[1] / (2 * self.zoom), min(self.cam[1], self.map_size[1] * (self.tile_size) - (self.surf_size[1] / (2 * self.zoom))))
         
         #Inventory
         self.inventory()
         
-        return self.cam, self.pos, mouse_buttons, mouse_pos
+        return self.cam, self.pos
     
     def inventory(self):
         if self.inventory_open == True:
@@ -85,6 +82,12 @@ class Player:
                 else:
                     self.inventory_open = False
                 
+        if event.type == pygame.MOUSEWHEEL:
+            if event.y == 1: #up
+                return 'up'
+            if event.y == -1: #down
+                return 'down'
+                
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 self.movement[3][0] = False
@@ -106,6 +109,10 @@ class Player:
             if event.key == pygame.K_s:
                 self.movement[1][1] = False
     
-    def render(self, surf):#TODO burayı düzelt
-        surf.blit(self.game.pimg, ((self.pos[0] * self.zoom) + ((self.surf_size[0] / 2) - ((self.tile_size * self.zoom) / 2)) - (self.cam[0] * self.zoom),
-                                   (self.pos[1] * self.zoom) + ((self.surf_size[1] / 2) - ((self.tile_size * self.zoom) / 2)) - (self.cam[1] * self.zoom)))
+    def render(self, surf, zoom):
+        self.zoom = zoom
+        
+        img_size = self.game.pimg.get_size()
+        img = pygame.transform.scale(self.game.pimg, (img_size[0] * self.zoom, img_size[1] * self.zoom))
+        surf.blit(img, ((self.pos[0] * self.zoom) + ((self.surf_size[0] / 2) - ((self.tile_size * self.zoom) / 2)) - (self.cam[0] * self.zoom),
+                        (self.pos[1] * self.zoom) + ((self.surf_size[1] / 2) - ((self.tile_size * self.zoom) / 2)) - (self.cam[1] * self.zoom)))

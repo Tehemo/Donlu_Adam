@@ -19,7 +19,7 @@ class Game:
 
         self.Clock = pygame.time.Clock()
         
-        self.tile_size, self.zoom = SetSize(16, 2, 2) #(TILE_SIZE, RATIO, ZOOM)
+        self.tile_size, self.zoom = SetSize(16, 2, 1) #(TILE_SIZE, RATIO, ZOOM) #! RATIO MUST BIGGER THAN ONE
         
         tile_assets = {
             'empty' : 'empty',
@@ -30,8 +30,7 @@ class Game:
         
         self.map_size = (100,100)
         
-        self.RD = [floor((self.display_size[0] / self.tile_size) + (self.tile_size / 8) - 1),
-                   floor((self.display_size[1] / self.tile_size) + (self.tile_size / 8) + 1)]
+        Game.updateRD(self)
         
         self.tiles = Tiles(self, tile_assets, self.tile_size, self.zoom)
         self.tiles.make_map(self.map_size[0], self.map_size[1])
@@ -43,29 +42,41 @@ class Game:
         print(tile_assets,self.guis)
         
         self.pimg = LoadImage('player/player.png')
-        self.player = Player(self, (0,0), self.map_size, self.tile_size, self.zoom, self.guis)
-        
+        self.player = Player(self, ((self.tile_size * 20), (self.tile_size * 20)), self.map_size, self.tile_size, self.zoom, self.guis)
+    
+    def updateRD(self):
+        self.RD = [floor((self.display_size[0] / (self.tile_size * self.zoom)) + (self.tile_size / 8) - 1),
+                   floor((self.display_size[1] / (self.tile_size * self.zoom)) + (self.tile_size / 8) + 1)]
+    
     def run(self):
         while True:
             self.display.fill((0,0,0))
             
             for event in pygame.event.get():
-                self.player.player_event(event)
+                scroll_wheel = self.player.player_event(event)
+                if scroll_wheel != None:
+                    if scroll_wheel == 'up' and self.zoom+0.5 <= 8:
+                        self.zoom = round(self.zoom + 0.5, 1)
+                    if scroll_wheel == 'down' and self.zoom-0.5 > 0:
+                        self.zoom = round(self.zoom - 0.5, 1)
+                    Game.updateRD(self)
+                    print(self.zoom)
+                    print(self.RD)
                 
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        print(self.p_cam, self.p_pos, self.RD, self.mouse_pos, self.RD)
+                        print(self.p_cam, self.p_pos, self.RD)
                     if event.key == pygame.K_F1:
                         self.RD[0], self.RD[1] = self.RD[0] + 1, self.RD[1] + 1
                     if event.key == pygame.K_F2:
                         self.RD[0], self.RD[1] = self.RD[0] - 1, self.RD[1] - 1
             
-            self.p_cam, self.p_pos, self.mouse_buttons, self.mouse_pos = self.player.update()
+            self.p_cam, self.p_pos = self.player.update()
             
-            self.tiles.render(self.display, self.p_cam, self.p_pos, self.player, self.RD)
+            self.tiles.render(self.display, self.p_cam, self.p_pos, self.player, self.RD, self.zoom)
             
             self.player.render_inventory(self.display)
             

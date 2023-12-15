@@ -26,8 +26,9 @@ class Tiles:
                     self.map[((i * width) + j)].append('empty')
                     self.map[((i * width) + j)].append(0)
     
-    def render(self, surf, p_cam, p_pos, player, render_distance):
+    def render(self, surf, p_cam, p_pos, player, render_distance, zoom):
         self.player_rendered = False
+        self.zoom = zoom
 
         self.RD = render_distance
         #Render Tiles
@@ -63,7 +64,7 @@ class Tiles:
                                     (self.map[j][0][1] * (self.tile_size * self.zoom)) + ((self.surf_size[1] / 2) - (self.tile_size * self.zoom)) - (p_cam[1] * self.zoom))
                     
                     if ((p_pos[1] - (self.tile_size / 2) < (self.map[j][0][1] * self.tile_size) and p_pos[0] > self.map[j][0][0] * self.tile_size) or p_pos[0] < self.tile_size / 2 or p_pos[1] > (self.height * self.tile_size - self.tile_size / 2)) and self.player_rendered == False:
-                        player.render(surf)
+                        player.render(surf, self.zoom)
                         self.player_rendered = True
                         
                         if self.map[j][3] != 'empty': #If player stands behind an object make that object transparent and render that
