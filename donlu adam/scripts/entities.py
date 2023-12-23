@@ -17,7 +17,8 @@ class Player:
         
         #Movement variables        
         self.movement = [[False,False],[False,False],True,[False,False],[False,False]] #0-X, 1-Y, 2-Free cam toggle, 3-cam X, 4-cam Y
-        self.vel = tile_size / 8
+        self.base_vel = [self.tile_size / 12, self.tile_size / 16] #[Running, Walking]
+        self.vel = self.base_vel[1]
         self.cam_vel = tile_size / 2
         
         #Inventory variables
@@ -26,11 +27,16 @@ class Player:
         self.inventory_size = guis['inventory'].get_size()
         self.inventory_x = (-1 * self.surf_size[0] - self.inventory_size[0])
         
+        self.lastx, self.lasty = 0, 0
+        
     def update(self):
         #Movement
         factor_x = self.vel / (abs((self.movement[1][0] - self.movement[1][1]) * 2**.5) + 1 - abs((self.movement[1][0] - self.movement[1][1])))
         factor_y = self.vel / (abs((self.movement[0][0] - self.movement[0][1]) * 2**.5) + 1 - abs((self.movement[0][0] - self.movement[0][1])))
-
+        if self.lastx != factor_x or self.lasty != factor_y:
+            print(f'Raw vel X:{factor_x}, Y:{factor_y}; rounded vel X:{round(factor_x)}, Y:{round(factor_y)}')
+            self.lastx, self.lasty = factor_x, factor_y
+        
         self.pos[0] = round(self.pos[0] + factor_x * (self.movement[0][1] - self.movement[0][0]))
         self.pos[1] = round(self.pos[1] + factor_y * (self.movement[1][1] - self.movement[1][0]))
 
@@ -65,7 +71,8 @@ class Player:
             if event.key == pygame.K_DOWN:
                 self.movement[1][1], self.movement[2], self.movement[4][1] = False, True, True
             if event.key == pygame.K_LSHIFT:
-                self.cam_vel = (self.tile_size * self.zoom)
+                self.cam_vel = self.base_vel[0] * 4
+                self.vel = self.base_vel[0]
             
             if event.key == pygame.K_a:
                 self.movement[0][0], self.movement[2], self.movement[3][0] = True, False, False
@@ -98,7 +105,8 @@ class Player:
             if event.key == pygame.K_DOWN:
                 self.movement[4][1] = False
             if event.key == pygame.K_LSHIFT:
-                self.cam_vel = (self.tile_size * self.zoom) / 2
+                self.cam_vel = self.base_vel[0]
+                self.vel = self.base_vel[1]
             
             if event.key == pygame.K_a:
                 self.movement[0][0] = False
