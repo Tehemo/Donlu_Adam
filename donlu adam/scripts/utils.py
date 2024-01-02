@@ -23,3 +23,7 @@ def LoadImages(path):
     for img in os.listdir(Base_Image_Path + path):
         images.append(LoadImage(path + '/' + img))
     return images
+
+def ChangeColor():
+    #Make imported images changes color.
+    pass
